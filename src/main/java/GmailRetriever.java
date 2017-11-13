@@ -73,7 +73,10 @@ public class GmailRetriever {
                 .build();
     }
 
-    public static List<Message> getMessages(){}
+    public static List<Message> getMessages(){
+        List <Message> list = new ArrayList<Message>();
+        return list;
+    }
 
 
 
