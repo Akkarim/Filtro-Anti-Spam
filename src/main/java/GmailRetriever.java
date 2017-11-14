@@ -7,7 +7,6 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.util.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.*;
@@ -18,14 +17,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
 public class GmailRetriever {
 
     private static final String APPLICATION_NAME =
-            "Bayesian Filter"; //Gmail API Java Quickstart
+            "Bayesian_Filter"; //Gmail API Java Quickstart
 
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/gmail-java-bayesian");
+            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter");
 
     private static FileDataStoreFactory DATA_STORE_FACTORY;
 
@@ -73,11 +75,79 @@ public class GmailRetriever {
                 .build();
     }
 
-    public static List<Message> getMessages(){
-        List <Message> list = new ArrayList<Message>();
-        return list;
+    public static List<Message> getMessages() throws IOException {
+
+        Gmail gSpam = getGmailService();
+
+        String user = "me"; //Para que agarre las cosas del usuario
+        String query = "in:Spam"; //Para que agarre el spam
+
+        String body; //El cuerpo del corrreo
+        byte[] emailBytes; // Un array con letras del correo
+
+        ListMessagesResponse response = gSpam.users().messages().list(user).setQ(query).execute();
+        List<Message> messages = response.getMessages();
+        Message message;
+
+        Document doc;
+        Base64 base = new Base64(true);
+
+        for(Message mID : messages){
+
+            message = getGmailService().users().messages().get(user, mID.getId()).setFormat("full").execute();
+
+            if(message.getPayload().getMimeType().equals("text/html")) {
+
+                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                body = new String(emailBytes);
+                doc = Jsoup.parse(body);
+                System.out.println(doc.body().text());
+
+
+            } else if (message.getPayload().getMimeType().equals("text/plain")){
+
+                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                body = new String(emailBytes);
+                System.out.println(body);
+
+
+            } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+
+                List<MessagePart> parts = message.getPayload().getParts();
+
+                for (MessagePart parte : parts) {
+
+                    emailBytes = base.decodeBase64(parte.getBody().getData());
+
+                    if (parte.getMimeType().equals("text/html")) {
+
+                        body = new String(emailBytes);
+                        doc = Jsoup.parse(body);
+                        System.out.println(doc.body().text());
+
+                    } else if (parte.getMimeType().equals("text/plain")) {
+                        body = new String(emailBytes);
+                        System.out.println(body);
+                    }
+                }
+            }
+
+        }
+
+        return messages;
     }
-
-
-
 }
+
+/*
+    List<Message> messages = new ArrayList<Message>();
+    while (response.getMessages() != null) {
+      messages.addAll(response.getMessages());
+      if (response.getNextPageToken() != null) {
+        String pageToken = response.getNextPageToken();
+        response = service.users().messages().list(userId).setLabelIds(labelIds)
+            .setPageToken(pageToken).execute();
+      } else {
+        break;
+      }
+    }
+ */
