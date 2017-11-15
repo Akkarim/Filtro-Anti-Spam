@@ -8,13 +8,9 @@ public class main {
     public static void main(String[] args) throws IOException {
 
         System.out.println("Hola putito");
+        Controller caca = new Controller();
 
-        GmailRetriever prb;
-
-        prb = new GmailRetriever();
-
-        //prb.
-
+        caca.logIn("io");
 
     }
 

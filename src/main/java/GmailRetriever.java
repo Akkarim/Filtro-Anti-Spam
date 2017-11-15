@@ -23,11 +23,13 @@ import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
 public class GmailRetriever {
 
-    private static final String APPLICATION_NAME =
-            "Bayesian_Filter"; //Gmail API Java Quickstart
+    private static String usuario;
 
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter");
+    private static final String APPLICATION_NAME =
+            "Bayesian_Filter";
+
+    private static  java.io.File DATA_STORE_DIR = new java.io.File(
+            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter/" + usuario); //soy crack
 
     private static FileDataStoreFactory DATA_STORE_FACTORY;
 
@@ -48,6 +50,7 @@ public class GmailRetriever {
             System.exit(1);
         }
     }
+    
 
     public static Credential authorize() throws IOException {
         // Load client secrets.
@@ -81,13 +84,24 @@ public class GmailRetriever {
 
         String user = "me"; //Para que agarre las cosas del usuario
         String query = "in:Spam"; //Para que agarre el spam
+        String pageToken; // Para dividir
 
         String body; //El cuerpo del corrreo
         byte[] emailBytes; // Un array con letras del correo
 
         ListMessagesResponse response = gSpam.users().messages().list(user).setQ(query).execute();
         List<Message> messages = response.getMessages();
-        Message message;
+        Message message = new Message();
+
+        while (response.getMessages() != null) {
+            messages.addAll(response.getMessages());
+            if (response.getNextPageToken() != null) {
+                pageToken = response.getNextPageToken();
+                response = gSpam.users().messages().list(user).setQ(query).setPageToken(pageToken).execute(); //
+            } else {
+                break;
+            }
+        }
 
         Document doc;
         Base64 base = new Base64(true);
@@ -133,21 +147,18 @@ public class GmailRetriever {
             }
 
         }
-
         return messages;
     }
+
+    public static void setUsuario(String usr){
+        usuario = usr;
+    }
+
+    public static String getUsuario() {
+        return usuario;
+    }
+
 }
 
-/*
-    List<Message> messages = new ArrayList<Message>();
-    while (response.getMessages() != null) {
-      messages.addAll(response.getMessages());
-      if (response.getNextPageToken() != null) {
-        String pageToken = response.getNextPageToken();
-        response = service.users().messages().list(userId).setLabelIds(labelIds)
-            .setPageToken(pageToken).execute();
-      } else {
-        break;
-      }
-    }
- */
+
+
