@@ -1,8 +1,7 @@
 public class Controller {
-    BayesianFilter filter;
     GmailRetriever mails;
 
-    Controller(){
+    public Controller(){
         mails = new GmailRetriever();
     }
 
@@ -10,9 +9,28 @@ public class Controller {
 
     }
 
+    public void train(){
+
+    }
+
+    public String showData(){
+        String data = "";
+        return data;
+    }
+
+    public GmailRetriever getMail() {
+        GmailRetriever mail = getMail();
+        return mail;
+    }
+
     public void logIn (String usuario){
 
        mails.setUsuario(usuario);
     }
+
+    public void logOut(){
+
+    }
+
 
 }
