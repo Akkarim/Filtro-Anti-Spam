@@ -19,13 +19,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Main aMain = new Main();
         //aMain.start();
-        /*try {
+        try {
             control.logIn("jimmyacua");
         } catch (IOException e){
             System.out.println("Ups! Error. Try again later.");
-        }*/
-        //control.logOut();
-        control.getMail();
+        }
+        control.logOut();
+        //control.getMail();
     }
 
 }

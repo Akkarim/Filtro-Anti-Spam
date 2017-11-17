@@ -25,7 +25,19 @@ public class Interface {
 				Scanner op = new Scanner(System.in);
 				int option2 = op.nextInt();
 				switch (option2){
-					case 1: controller.configuration();
+					case 1:
+                        System.out.println("Please enter the spam probability");
+						Scanner prob = new Scanner(System.in);
+						double spamProb = prob.nextDouble();
+
+                        System.out.println("Please enter the spam threshold");
+                        Scanner thres = new Scanner(System.in);
+                        double trhesholdProb = prob.nextDouble();
+
+                        System.out.println("Please enter size of the training set");
+                        Scanner size = new Scanner(System.in);
+                        int trainSet = prob.nextInt();
+						controller.configuration(spamProb,trhesholdProb,trainSet);
 						break;
 
 					case 2: controller.train();

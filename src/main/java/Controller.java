@@ -9,14 +9,18 @@ import com.google.api.services.gmail.model.Message;
 public class Controller {
     private GmailRetriever mails;
     private String bf;
+    private BayesianFilter filter;
 
     public Controller(){
 
         mails = new GmailRetriever();
+        filter = new BayesianFilter();
     }
 
-    public void configuration(){
-
+    public void configuration(double spamProb, double spamThresh, int setSize){
+        filter.setSpamProbab(spamProb);
+        filter.setSpamThreshold(spamThresh);
+        filter.setSizeOfTrainSet(setSize);
     }
 
     public void train(){
@@ -30,10 +34,10 @@ public class Controller {
 
     public Message getMail() throws IOException {
         Message mail = new Message();
-        List<Message> lista = new List<Message>();
+        /*List<Message> lista = new List<Message>();
         lista = mails.getMessages();
         mail = lista.get(1);
-        System.out.println(mail.getId());
+        System.out.println(mail.getId());*/
         return mail;
     }
 
@@ -45,7 +49,7 @@ public class Controller {
     }
 
     public void logIn(String usr) throws IOException {
-        bf = System.getProperty("user.home") + "//Documents/BayesianFilter/Users";
+        bf = System.getProperty("user.home") + "//Documentos/BayesianFilter/Users";
         File bayesFilt = new File(bf);
         if(!bayesFilt.exists()) {
             bayesFilt.mkdir();

@@ -20,10 +20,12 @@ public class BayesianFilter {
     }
 
     public void setSpamProbab(double spamProbab) {
+
         this.spamProbab = spamProbab;
     }
 
     public void setWord(Word word) {
+
         this.word = word;
     }
 
@@ -32,6 +34,11 @@ public class BayesianFilter {
     }
 
     public void addToDictionary(Word w, Double prob){
+
         dictionary.put(w,prob);
+    }
+
+    public void setSizeOfTrainSet(int newSize){
+        sizeOfTrainSet = newSize;
     }
 }
