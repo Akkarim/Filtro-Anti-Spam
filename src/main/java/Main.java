@@ -20,12 +20,12 @@ public class Main {
         Main aMain = new Main();
         //aMain.start();
         try {
-            control.logIn("jimmyacua");
+            control.logIn("caca");
         } catch (IOException e){
             System.out.println("Ups! Error. Try again later.");
         }
-        control.logOut();
-        //control.getMail();
+        //control.logOut();
+        control.getMail(0);
     }
 
 }

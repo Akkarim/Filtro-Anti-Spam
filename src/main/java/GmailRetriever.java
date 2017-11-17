@@ -91,14 +91,14 @@ public class GmailRetriever {
         byte[] emailBytes; // Un array con letras del correo
 
         ListMessagesResponse response = gSpam.users().messages().list(user).setQ(query).execute();
-        List<Message> messages = response.getMessages();
-        Message message = new Message();
+        List<Message> messages = new ArrayList<Message>();
+        //Message message = new Message();
 
         while (response.getMessages() != null) {
             messages.addAll(response.getMessages());
             if (response.getNextPageToken() != null) {
                 pageToken = response.getNextPageToken();
-                response = gSpam.users().messages().list(user).setQ(query).setPageToken(pageToken).execute(); //
+                response = gSpam.users().messages().list(user).setQ(query).setPageToken(pageToken).execute();
             } else {
                 break;
             }

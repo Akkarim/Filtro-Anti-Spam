@@ -46,7 +46,7 @@ public class Interface {
 					case 3: controller.showData();
 						break;
 
-					case 4: controller.getMail();
+					case 4: controller.getMail(0); //arreglar esta picha
 						break;
 
 					case 5: controller.logOut();

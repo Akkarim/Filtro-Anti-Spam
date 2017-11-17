@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
 public class Controller {
     private GmailRetriever mails;
@@ -15,6 +16,7 @@ public class Controller {
 
         mails = new GmailRetriever();
         filter = new BayesianFilter();
+        bf = "";
     }
 
     public void configuration(double spamProb, double spamThresh, int setSize){
@@ -24,6 +26,7 @@ public class Controller {
     }
 
     public void train(){
+        int counter = 42;
 
     }
 
@@ -32,34 +35,31 @@ public class Controller {
         return data;
     }
 
-    public Message getMail() throws IOException {
-        Message mail = new Message();
-        /*List<Message> lista = new List<Message>();
-        lista = mails.getMessages();
-        mail = lista.get(1);
-        System.out.println(mail.getId());*/
-        return mail;
+    public Message getMail(int x) throws IOException { // @param: número de correo
+        List<Message> array = new ArrayList<Message>();
+
+        array = mails.getMessages();
+        if (array.get(x)  != null){
+            System.out.println(array.get(x));
+            return array.get(x);
+        } else {
+            return null;
+        }
     }
 
     public static void logOut(){
         String path = System.getProperty("user.home")+ "//.credentials/gmail-java-Bayesian_Filter//StoredCredential";
         File data = new File(path);
         data.delete();
-        System.out.println("Your cretentials has been deleted. BITCH!");
+        System.out.println("Your cretentials has been deleted.");
     }
 
     public void logIn(String usr) throws IOException {
-        bf = System.getProperty("user.home") + "//Documentos/BayesianFilter/Users";
+        bf = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr; //
         File bayesFilt = new File(bf);
-        if(!bayesFilt.exists()) {
-            bayesFilt.mkdir();
-        } else{
-            File userData = new File(bf+ "//" + usr);
-            if(!userData.exists()){
-                userData.mkdir();
-            }
-        }
-        mails.getMessages();
+        bayesFilt.mkdirs();
+        //mails.getMessages();
+        System.out.println(bf);
     }
 
 }
