@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
@@ -25,6 +24,7 @@ public class Controller {
         filter.setSizeOfTrainSet(setSize);
     }
 
+
     public void train(){
         int counter = 42;
 
@@ -38,7 +38,7 @@ public class Controller {
     public Message getMail(int x) throws IOException { // @param: número de correo
         List<Message> array = new ArrayList<Message>();
 
-        array = mails.getMessages();
+        array = mails.getMessages("messages");// puede ser in:Spam o messages
         if (array.get(x)  != null){
             System.out.println(array.get(x));
             return array.get(x);

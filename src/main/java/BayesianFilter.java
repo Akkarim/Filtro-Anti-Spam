@@ -1,4 +1,7 @@
 import java.util.Hashtable;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import java.util.List;
 
 public class BayesianFilter {
 
@@ -24,12 +27,13 @@ public class BayesianFilter {
         this.spamProbab = spamProbab;
     }
 
-    public void setWord(Word word) {
+    /*public void setWord(Word word) {
 
         this.word = word;
-    }
+    }*/
 
     public void setSpamThreshold(double spamThreshold) {
+
         this.spamThreshold = spamThreshold;
     }
 
@@ -39,6 +43,16 @@ public class BayesianFilter {
     }
 
     public void setSizeOfTrainSet(int newSize){
+
         sizeOfTrainSet = newSize;
     }
+
+   /* public List<Message> seteSpam(){
+
+    }
+
+    public List<Message> setNoSpam(){
+
+    }*/
+
 }

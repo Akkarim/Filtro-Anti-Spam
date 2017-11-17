@@ -79,12 +79,12 @@ public class GmailRetriever {
                 .build();
     }
 
-    public static List<Message> getMessages() throws IOException {
+    public static List<Message> getMessages(String query) throws IOException {
 
         Gmail gSpam = getGmailService();
 
         String user = "me"; //Para que agarre las cosas del usuario
-        String query = "in:Spam"; //Para que agarre el spam
+        //String query = "in:Spam"; //Para que agarre el spam
         String pageToken; // Para dividir
 
         String body; //El cuerpo del corrreo

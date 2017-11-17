@@ -18,6 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main aMain = new Main();
+        Data prb = new Data();
         //aMain.start();
         try {
             control.logIn("caca");
@@ -25,7 +26,10 @@ public class Main {
             System.out.println("Ups! Error. Try again later.");
         }
         //control.logOut();
-        control.getMail(0);
+       // control.getMail(0);
+
+        prb.store("caca", 0.0, 0.0, 0);
+        prb.load("caca");
     }
 
 }
