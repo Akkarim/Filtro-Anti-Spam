@@ -11,6 +11,9 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.*;
 import com.google.api.services.gmail.Gmail;
+
+import java.awt.*;
+import java.io.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,13 +26,11 @@ import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
 public class GmailRetriever {
 
-    private static String usuario;
-
     private static final String APPLICATION_NAME =
             "Bayesian_Filter";
 
     private static  java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter/" + usuario); //soy crack
+            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter"); //soy crack  "Documents/BayesianFilter"
 
     private static FileDataStoreFactory DATA_STORE_FACTORY;
 
@@ -103,33 +104,33 @@ public class GmailRetriever {
             }
         }
 
-        Document doc;
+        /*Document doc;
         Base64 base = new Base64(true);
 
         for(Message mID : messages){
 
-            message = getGmailService().users().messages().get(user, mID.getId()).setFormat("full").execute();
+                    message = getGmailService().users().messages().get(user, mID.getId()).setFormat("full").execute();
 
-            if(message.getPayload().getMimeType().equals("text/html")) {
+                    if(message.getPayload().getMimeType().equals("text/html")) {
 
-                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                body = new String(emailBytes);
-                doc = Jsoup.parse(body);
-                System.out.println(doc.body().text());
-
-
-            } else if (message.getPayload().getMimeType().equals("text/plain")){
-
-                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                body = new String(emailBytes);
-                System.out.println(body);
+                        emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                        body = new String(emailBytes);
+                        doc = Jsoup.parse(body);
+                        System.out.println(doc.body().text());
 
 
-            } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+                    } else if (message.getPayload().getMimeType().equals("text/plain")){
 
-                List<MessagePart> parts = message.getPayload().getParts();
+                        emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                        body = new String(emailBytes);
+                        System.out.println(body);
 
-                for (MessagePart parte : parts) {
+
+                    } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+
+                        List<MessagePart> parts = message.getPayload().getParts();
+
+                        for (MessagePart parte : parts) {
 
                     emailBytes = base.decodeBase64(parte.getBody().getData());
 
@@ -146,17 +147,10 @@ public class GmailRetriever {
                 }
             }
 
-        }
+        }*/
         return messages;
     }
 
-    public static void setUsuario(String usr){
-        usuario = usr;
-    }
-
-    public static String getUsuario() {
-        return usuario;
-    }
 
 }
 

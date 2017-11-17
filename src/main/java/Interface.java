@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Interface {
@@ -9,7 +10,7 @@ public class Interface {
 	}
 
 
-	public void menu() {
+	public void menu() throws IOException {
 		System.out.println("Welcome, please select an option.");
 		System.out.print(" Option 1: Authenticate yourself \n Option 2: Exit \n");
 		Scanner opt = new Scanner(System.in);
