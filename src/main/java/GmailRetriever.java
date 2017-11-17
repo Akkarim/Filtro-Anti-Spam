@@ -82,7 +82,6 @@ public class GmailRetriever {
     public static List<Message> getMessages(String query) throws IOException {
 
         Gmail gSpam = getGmailService();
-
         String user = "me"; //Para que agarre las cosas del usuario
         //String query = "in:Spam"; //Para que agarre el spam
         String pageToken; // Para dividir
@@ -93,6 +92,7 @@ public class GmailRetriever {
         ListMessagesResponse response = gSpam.users().messages().list(user).setQ(query).execute();
         List<Message> messages = new ArrayList<Message>();
         //Message message = new Message();
+
 
         while (response.getMessages() != null) {
             messages.addAll(response.getMessages());

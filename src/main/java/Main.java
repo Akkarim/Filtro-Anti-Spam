@@ -18,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main aMain = new Main();
-        Data prb = new Data();
+        BayesianFilter bayes = new BayesianFilter();
         //aMain.start();
         try {
             control.logIn("caca");
@@ -26,10 +26,9 @@ public class Main {
             System.out.println("Ups! Error. Try again later.");
         }
         //control.logOut();
-       // control.getMail(0);
-
-        prb.store("caca", 0.0, 0.0, 0);
-        prb.load("caca");
+        //control.getMail(1);
+        //bayes.noSpamSet(10);
+        System.out.println(control.getBody(gm.getGmailService(), "me", "15fcac93204c778e"));
     }
 
 }

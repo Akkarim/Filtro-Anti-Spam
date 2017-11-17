@@ -6,6 +6,8 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
+
+
 public class Controller {
     private GmailRetriever mails;
     private String bf;
@@ -35,13 +37,13 @@ public class Controller {
         return data;
     }
 
-    public Message getMail(int x) throws IOException { // @param: número de correo
+    public Message getMail(int num) throws IOException { // @param: número de correo
         List<Message> array = new ArrayList<Message>();
 
-        array = mails.getMessages("messages");// puede ser in:Spam o messages
-        if (array.get(x)  != null){
-            System.out.println(array.get(x));
-            return array.get(x);
+        array = mails.getMessages("In:Inbox");// puede ser in:Spam o in:Inbox
+        if (array.get(num)  != null){
+            System.out.println(array.get(num));
+            return array.get(num);
         } else {
             return null;
         }
@@ -62,4 +64,11 @@ public class Controller {
         System.out.println(bf);
     }
 
+    public static String getBody(Gmail service, String userId, String messageId)
+            throws IOException {
+        Message message = service.users().messages().get(userId, messageId).execute();
+        String body = message.getSnippet();
+
+        return body;
+    }
 }

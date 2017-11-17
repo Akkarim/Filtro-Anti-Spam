@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
@@ -47,12 +49,16 @@ public class BayesianFilter {
         sizeOfTrainSet = newSize;
     }
 
-   /* public List<Message> seteSpam(){
-
+    public List<Message> spamSet() throws IOException {
+        List<Message> spamMessages = new ArrayList<Message>();
+        spamMessages = mail.getMessages("in:Spam");
+        return spamMessages;
     }
 
-    public List<Message> setNoSpam(){
-
-    }*/
+    public List<Message> noSpamSet(long numMessages) throws IOException {
+        List<Message> notSpamMessages = new ArrayList<Message>();
+        notSpamMessages = mail.getMessages("in:Inbox");
+        return notSpamMessages;
+    }
 
 }

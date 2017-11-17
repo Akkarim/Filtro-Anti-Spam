@@ -1,11 +1,13 @@
 public class Word {
     private double probability;
-    private double frequency;
+    private int frequencyInSpam;
+    private int frequencyInNotSpam;
     private String word;
 
     public Word() {
         probability = 0;
-        frequency = 0;
+        frequencyInSpam = 0;
+        frequencyInNotSpam = 0;
         word = "";
     }
 
@@ -14,9 +16,13 @@ public class Word {
         probability = probab;
     }
 
-    public void setFrequency(double frequency) {
+    public void setFrequencyInSpam(int frequency) {
 
-        this.frequency = frequency;
+        frequencyInSpam = frequency;
+    }
+
+    public void setFrequencyInNotSpam(int frequency) {
+        frequencyInNotSpam = frequency;
     }
 
     public void setWord(String word) {
@@ -29,13 +35,17 @@ public class Word {
         return probability;
     }
 
-    public double getFrequency() {
+    public int getFrequencyInSpam() {
 
-        return frequency;
+        return frequencyInSpam;
+    }
+
+    public int getFrequencyInNotSpam() {
+        return frequencyInNotSpam;
     }
 
     public String getWord() {
-
         return word;
     }
+
 }

@@ -22,15 +22,22 @@ public class Data {
         hashData.close();
     }
 
-    public void load(String usr) throws FileNotFoundException { //revisar porque no es tipo void
+    public void load(String usr) throws IOException {
 
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
         //File rData = new File(path + "/hashData.txt");
         FileReader read = new FileReader(path + "/hashData.txt");
         BufferedReader content = new BufferedReader(read);
+        try {
+            content.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void delete(){
-
+    public void delete(String usr){
+        String path = System.getProperty("user.home") + "//Documents/BayesianFilter/Users" + "/" + usr + "//hashData.txt";
+        File toDelete = new File(path);
+        toDelete.delete();
     }
 }
