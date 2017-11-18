@@ -6,7 +6,7 @@ public class Data {
     public Data(){
     }
 
-    public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<Word, Double> tabla) throws IOException {
+    public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<String, Double> tabla) throws IOException {
         //Hashtable<Integer, String> prb = new Hashtable<Integer, String>();
         //prb.put(42, "vida");
         //prb.put(24, "muerte");
@@ -16,7 +16,7 @@ public class Data {
         File uData = new File(path + "/hashData.txt"); //Usaer data, hacemos un archivo
         FileWriter hashData = new FileWriter(uData, true); // no se que para poder escribir
         hashData.write("HashTable: " + tabla.toString() + '\n');// escribimos :v
-        hashData.append("SpamProb: " + spamProb + '\n'+ "SpamThresh: " + spamThresh + '\n' + "SetSize" + setSize);
+        hashData.append("SpamProb: " + spamProb + '\n'+ "SpamThresh: " + spamThresh + '\n' + "SetSize: " + setSize);
         hashData.close();
     }
 

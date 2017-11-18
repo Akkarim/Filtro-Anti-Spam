@@ -11,6 +11,13 @@ public class Word {
         word = "";
     }
 
+    public Word(String w){
+        probability = 0;
+        frequencyInSpam = 0;
+        frequencyInNotSpam = 0;
+        word = w;
+    }
+
     public void setProbability(double probab){
 
         probability = probab;

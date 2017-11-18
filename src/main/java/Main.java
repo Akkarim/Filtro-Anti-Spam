@@ -1,5 +1,6 @@
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.Hashtable;
 
 public class Main {
     private  static  Controller control;
@@ -23,7 +24,7 @@ public class Main {
         Data data = new Data();
         //aMain.start();
         try {
-            control.logIn("caca");
+            control.logIn("jimmy");
         } catch (IOException e){
             System.out.println("Ups! Error. Try again later.");
         }
@@ -34,10 +35,10 @@ public class Main {
         //control.getMail(1);
         //bayes.noSpamSet(10);
         //System.out.println(control.getBody(gm.getGmailService(), "me", "15fcac93204c778e"));
-        String body = gm.getBody("in:Spam");
+        String body = gm.getBody("in:Inbox");
         //bayes.setProbForEmail(body);
-
-        data.store("caca", 0.9, 0.6, bayes.setProbForEmail(body));
+        Hashtable<String, Double> table = bayes.setProbForEmail(body);
+        data.store("jimmy",0,0.3, 4, table);
     }
 
 }
