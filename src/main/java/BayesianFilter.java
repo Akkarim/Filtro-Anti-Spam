@@ -63,62 +63,74 @@ public class BayesianFilter {
         return notSpamMessages;
     }
 
-    public Hashtable<String, Double> setProbForEmail(String msgs) throws IOException {
-        int counter = 0; double pb;
-        int size = spamSet().size();
+    public Hashtable<String, Double> setProbForEmail(String msgs, String query) throws IOException {
+        int counter = 0;
+        double pb;
+        int sizeSpamSet = spamSet().size();
+        int sizeNoSpamSet = noSpamSet().size();
         String part, prb;
-        msgs = msgs.replace('.',' ');
-        msgs = msgs.replace('•',' ');
-        msgs = msgs.replace(',',' ');
-        msgs = msgs.replace('?',' ');
-        msgs = msgs.replace('¿',' ');
-        msgs = msgs.replace('!',' ');
-        msgs = msgs.replace('¡',' ');
-        msgs = msgs.replace('"',' ');
-        msgs = msgs.replace('@',' ');
-        msgs = msgs.replace('©',' ');
-        msgs = msgs.replace('#',' ');
-        msgs = msgs.replace(':',' ');
-        msgs = msgs.replace(';',' ');
-        msgs = msgs.replace('0',' ');
-        msgs = msgs.replace('1',' ');
-        msgs = msgs.replace('2',' ');
-        msgs = msgs.replace('3',' ');
-        msgs = msgs.replace('4',' ');
-        msgs = msgs.replace('5',' ');
-        msgs = msgs.replace('6',' ');
-        msgs = msgs.replace('7',' ');
-        msgs = msgs.replace('8',' ');
-        msgs = msgs.replace('9',' ');
-        msgs = msgs.replace('(',' ');
-        msgs = msgs.replace(')',' ');
-        msgs = msgs.replace('-',' ');
-        msgs = msgs.replace('_',' ');
-        msgs = msgs.replace('|',' ');
-        msgs = msgs.replace('/',' ');
+        msgs = msgs.replace('.', ' ');
+        msgs = msgs.replace('•', ' ');
+        msgs = msgs.replace(',', ' ');
+        msgs = msgs.replace('?', ' ');
+        msgs = msgs.replace('¿', ' ');
+        msgs = msgs.replace('!', ' ');
+        msgs = msgs.replace('¡', ' ');
+        msgs = msgs.replace('"', ' ');
+        msgs = msgs.replace('@', ' ');
+        msgs = msgs.replace('©', ' ');
+        msgs = msgs.replace('#', ' ');
+        msgs = msgs.replace(':', ' ');
+        msgs = msgs.replace(';', ' ');
+        msgs = msgs.replace('0', ' ');
+        msgs = msgs.replace('1', ' ');
+        msgs = msgs.replace('2', ' ');
+        msgs = msgs.replace('3', ' ');
+        msgs = msgs.replace('4', ' ');
+        msgs = msgs.replace('5', ' ');
+        msgs = msgs.replace('6', ' ');
+        msgs = msgs.replace('7', ' ');
+        msgs = msgs.replace('8', ' ');
+        msgs = msgs.replace('9', ' ');
+        msgs = msgs.replace('(', ' ');
+        msgs = msgs.replace(')', ' ');
+        msgs = msgs.replace('-', ' ');
+        msgs = msgs.replace('_', ' ');
+        msgs = msgs.replace('|', ' ');
+        msgs = msgs.replace('/', ' ');
         //word.setWord(msgs);
         //String[] setOfWord = word.getWord().split(" +");
         email.setBody(msgs);    //VER SI VA AQUI
-        String[] setOfWords = msgs.split(" *");
+        String[] setOfWords = msgs.split(" +");
 
-        for (String s: setOfWords) {
-            Word w = new Word(s);
-            if(dictionary.contains(w.getWord())){
-                w.setFrequencyInSpam(w.getFrequencyInSpam()+1);
-            } else{
-                pb = 0.0;
-                counter=0;
-                for(int i = 0; i<setOfWords.length;++i){
-                    if(s.equals(setOfWords[i])){
-                        counter++;
+        for (String s : setOfWords) {
+            if (!s.matches(" +") && !s.equals(" ")) {
+                Word w = new Word(s);
+                if (dictionary.contains(w.getWord())) {
+                    if (query.equals("n:Spam")) {
+                        w.setFrequencyInSpam(w.getFrequencyInSpam() + 1);
+                    } else {
+                        w.setFrequencyInNotSpam(w.getFrequencyInNotSpam() + 1);
                     }
+                } else {
+                    pb = 0.0;
+                    counter = 0;
+                    for (int i = 0; i < setOfWords.length; ++i) {
+                        if (s.equals(setOfWords[i])) {
+                            counter++;
+                        }
+                    }
+                    if (query.equals("n:Spam")) {
+                        pb = (double) counter / sizeSpamSet;
+                    } else {
+                        pb = (double) counter / sizeNoSpamSet;
+                    }
+                    //System.out.println(s);
+                    dictionary.put(s, pb);
                 }
-                    pb = (double)counter/size;
-                //System.out.println(s);
-                dictionary.put(s,pb);
             }
         }
-        return dictionary;
+            return dictionary;
     }
 
 }
