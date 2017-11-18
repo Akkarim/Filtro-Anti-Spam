@@ -108,7 +108,7 @@ public class BayesianFilter {
                 double pb = 0.0;
                 int start = 0;
                 int end = email.getBody().indexOf('\245');
-                /*while (end < setOfWords.length && end > 0) {
+                while (end < setOfWords.length && end > 0) {
                     String part = email.getBody().substring(start, end);
                     if(part.indexOf(s) > 0){
                         counter++;
@@ -116,7 +116,7 @@ public class BayesianFilter {
                     start = end+1;
                     String prb = email.getBody().substring(end, email.getBody().length());
                     end = prb.indexOf('\245');
-                }*/
+                }
                 try {
                     pb = counter/spamSet().size();
                 } catch (IOException e){

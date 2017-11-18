@@ -136,14 +136,14 @@ public class GmailRetriever {
                 emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
                 body = new String(emailBytes);
                 doc = Jsoup.parse(body);
-                bodyDef = doc.body().text() + '\245';
+                bodyDef += doc.body().text() + '\245';
                 //System.out.println(doc.body().text());
 
 
             } else if (message.getPayload().getMimeType().equals("text/plain")){
 
                 emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                bodyDef = new String(emailBytes) +   '\245';
+                bodyDef += new String(emailBytes) +   '\245';
                 //System.out.println(body);
 
 
@@ -159,18 +159,18 @@ public class GmailRetriever {
 
                         body = new String(emailBytes);
                         doc = Jsoup.parse(body);
-                        bodyDef = doc.body().text() +  '\245';
+                        bodyDef += doc.body().text() +  '\245';
                         //System.out.println(doc.body().text());
 
                     } else if (parte.getMimeType().equals("text/plain")) {
-                        bodyDef = new String(emailBytes) +  '\245';
+                        bodyDef += new String(emailBytes) +  '\245';
                         //System.out.println(body);
                     }
                 }
             }
 
         }
-
+    //System.out.print(bodyDef);
         return bodyDef;
     }
 }
