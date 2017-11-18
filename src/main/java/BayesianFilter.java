@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import java.util.List;
-
 public class BayesianFilter {
 
     private  GmailRetriever mail;
@@ -64,7 +63,10 @@ public class BayesianFilter {
         return notSpamMessages;
     }
 
-    public Hashtable<String, Double> setProbForEmail(String msgs){
+    public Hashtable<String, Double> setProbForEmail(String msgs) throws IOException {
+        int counter = 0; double pb;
+        int size = spamSet().size();
+        String part, prb;
         msgs = msgs.replace('.',' ');
         msgs = msgs.replace('•',' ');
         msgs = msgs.replace(',',' ');
@@ -97,32 +99,22 @@ public class BayesianFilter {
         //word.setWord(msgs);
         //String[] setOfWord = word.getWord().split(" +");
         email.setBody(msgs);    //VER SI VA AQUI
-        String[] setOfWords = msgs.split(" +");
+        String[] setOfWords = msgs.split(" *");
 
         for (String s: setOfWords) {
             Word w = new Word(s);
             if(dictionary.contains(w.getWord())){
                 w.setFrequencyInSpam(w.getFrequencyInSpam()+1);
             } else{
-                int counter = 0;
-                double pb = 0.0;
-                int start = 0;
-                int end = email.getBody().indexOf('\245');
-                while (end < setOfWords.length && end > 0) {
-                    String part = email.getBody().substring(start, end);
-                    if(part.indexOf(s) > 0){
+                pb = 0.0;
+                counter=0;
+                for(int i = 0; i<setOfWords.length;++i){
+                    if(s.equals(setOfWords[i])){
                         counter++;
                     }
-                    start = end+1;
-                    String prb = email.getBody().substring(end, email.getBody().length());
-                    end = prb.indexOf('\245');
                 }
-                try {
-                    pb = counter/spamSet().size();
-                } catch (IOException e){
-                    System.out.println("Error" + e);
-                }
-                System.out.println(s);
+                    pb = (double)counter/size;
+                //System.out.println(s);
                 dictionary.put(s,pb);
             }
         }

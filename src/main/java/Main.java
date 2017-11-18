@@ -35,7 +35,7 @@ public class Main {
         //control.getMail(1);
         //bayes.noSpamSet(10);
         //System.out.println(control.getBody(gm.getGmailService(), "me", "15fcac93204c778e"));
-        String body = gm.getBody("in:Spam");
+        String body = gm.getBody("in:Inbox");
         //System.out.println(body);
         bayes.setProbForEmail(body);
         Hashtable<String, Double> table = bayes.setProbForEmail(body);
