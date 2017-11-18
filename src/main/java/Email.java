@@ -5,6 +5,9 @@ public class Email {
     private String subject;
 
     public Email() {
+        id = "";
+        body = "";
+        subject = "";
 
     }
 

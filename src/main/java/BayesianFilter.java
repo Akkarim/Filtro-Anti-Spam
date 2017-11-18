@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
@@ -49,7 +50,7 @@ public class BayesianFilter {
         sizeOfTrainSet = newSize;
     }
 
-    public List<Message> spamSet() throws IOException {
+    /*public List<Message> spamSet() throws IOException {
         List<Message> spamMessages = new ArrayList<Message>();
         spamMessages = mail.getMessages("in:Spam");
         return spamMessages;
@@ -59,6 +60,35 @@ public class BayesianFilter {
         List<Message> notSpamMessages = new ArrayList<Message>();
         notSpamMessages = mail.getMessages("in:Inbox");
         return notSpamMessages;
+    }*/
+
+    public Hashtable<Word, Double> setProbForEmail(String msgs){
+        msgs = msgs.replace('.',' ');
+        msgs = msgs.replace('•',' ');
+        msgs = msgs.replace(',',' ');
+        msgs = msgs.replace('?',' ');
+        msgs = msgs.replace('¿',' ');
+        msgs = msgs.replace('!',' ');
+        msgs = msgs.replace('¡',' ');
+        msgs = msgs.replace('"',' ');
+        msgs = msgs.replace('@',' ');
+        msgs = msgs.replace('©',' ');
+        msgs = msgs.replace('#',' ');
+        msgs = msgs.replace(':',' ');
+        msgs = msgs.replace(';',' ');
+        word.setWord(msgs);
+        String[] setOfWord = word.getWord().split(" +");
+        for (String s: setOfWord) {
+            Word w = new Word();
+            w.setWord(s);
+            //System.out.println(s);
+            if(dictionary.contains(w)){
+                w.setFrequencyInSpam(w.getFrequencyInSpam()+1);
+            } else{
+                dictionary.put(w,0.9);
+            }
+        }
+        return dictionary;
     }
 
 }

@@ -5,7 +5,8 @@ import java.util.List;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
-
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartBody;
 
 
 public class Controller {
@@ -64,11 +65,4 @@ public class Controller {
         System.out.println(bf);
     }
 
-    public static String getBody(Gmail service, String userId, String messageId)
-            throws IOException {
-        Message message = service.users().messages().get(userId, messageId).execute();
-        String body = message.getSnippet();
-
-        return body;
-    }
 }

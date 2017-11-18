@@ -22,6 +22,7 @@ public class Word {
     }
 
     public void setFrequencyInNotSpam(int frequency) {
+
         frequencyInNotSpam = frequency;
     }
 
@@ -41,10 +42,12 @@ public class Word {
     }
 
     public int getFrequencyInNotSpam() {
+
         return frequencyInNotSpam;
     }
 
     public String getWord() {
+
         return word;
     }
 

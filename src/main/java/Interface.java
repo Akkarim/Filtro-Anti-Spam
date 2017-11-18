@@ -16,12 +16,13 @@ public class Interface {
 		Scanner opt = new Scanner(System.in);
 		int option = opt.nextInt();
 		switch (option){
-
 			case 1 :
 				//el usuario debe logearse primero
 				System.out.println("Type your User name:");
 				Scanner usr = new Scanner(System.in);
-				String user = usr.toString();
+
+				String user = usr.nextLine();
+				controller.logIn(user);
 				System.out.println("Please select an option:");
 				System.out.print(" Option 1: Configure \n Option 2: Train \n Option 3: Show Data \n Option 4: Get new mail \n Option 5: Log Out \n Option 6: Exit \n");
 				Scanner op = new Scanner(System.in);

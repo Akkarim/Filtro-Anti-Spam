@@ -5,24 +5,36 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.*;
 import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.GmailScopes;
+import com.google.api.services.gmail.model.ListMessagesResponse;
+import com.google.api.services.gmail.model.Message;
 
-import java.awt.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.URLDecoder;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
+
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
+
+import com.google.api.services.gmail.model.MessagePart;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 
 public class GmailRetriever {
 
@@ -83,7 +95,6 @@ public class GmailRetriever {
 
         Gmail gSpam = getGmailService();
         String user = "me"; //Para que agarre las cosas del usuario
-        //String query = "in:Spam"; //Para que agarre el spam
         String pageToken; // Para dividir
 
         String body; //El cuerpo del corrreo
@@ -91,8 +102,6 @@ public class GmailRetriever {
 
         ListMessagesResponse response = gSpam.users().messages().list(user).setQ(query).execute();
         List<Message> messages = new ArrayList<Message>();
-        //Message message = new Message();
-
 
         while (response.getMessages() != null) {
             messages.addAll(response.getMessages());
@@ -103,34 +112,47 @@ public class GmailRetriever {
                 break;
             }
         }
+        return messages;
+    }
 
-        /*Document doc;
+    public String getBody(String query) throws IOException, MessagingException {
+
+        Gmail ser = getGmailService();
+        String body = ""; //El cuerpo del corrreo
+        byte[] emailBytes; // Un array con letras del correo
+
+        ListMessagesResponse response = ser.users().messages().list("me").setQ(query).execute();
+        List<Message> messages = response.getMessages();
+        Message message = new Message();
+        Document doc;
         Base64 base = new Base64(true);
+        String bodyDef = "";
 
         for(Message mID : messages){
 
-                    message = getGmailService().users().messages().get(user, mID.getId()).setFormat("full").execute();
+            message = getGmailService().users().messages().get("me", mID.getId()).setFormat("full").execute();
 
-                    if(message.getPayload().getMimeType().equals("text/html")) {
+            if(message.getPayload().getMimeType().equals("text/html")) {
 
-                        emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                        body = new String(emailBytes);
-                        doc = Jsoup.parse(body);
-                        System.out.println(doc.body().text());
-
-
-                    } else if (message.getPayload().getMimeType().equals("text/plain")){
-
-                        emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                        body = new String(emailBytes);
-                        System.out.println(body);
+                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                body = new String(emailBytes);
+                doc = Jsoup.parse(body);
+                bodyDef = doc.body().text();
+                //System.out.println(doc.body().text());
 
 
-                    } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+            } else if (message.getPayload().getMimeType().equals("text/plain")){
 
-                        List<MessagePart> parts = message.getPayload().getParts();
+                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                bodyDef = new String(emailBytes);
+                //System.out.println(body);
 
-                        for (MessagePart parte : parts) {
+
+            } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+
+                List<MessagePart> parts = message.getPayload().getParts();
+
+                for (MessagePart parte : parts) {
 
                     emailBytes = base.decodeBase64(parte.getBody().getData());
 
@@ -138,21 +160,22 @@ public class GmailRetriever {
 
                         body = new String(emailBytes);
                         doc = Jsoup.parse(body);
-                        System.out.println(doc.body().text());
+                        bodyDef = doc.body().text();
+                        //System.out.println(doc.body().text());
 
                     } else if (parte.getMimeType().equals("text/plain")) {
-                        body = new String(emailBytes);
-                        System.out.println(body);
+                        bodyDef = new String(emailBytes);
+                        //System.out.println(body);
                     }
                 }
             }
 
-        }*/
-        return messages;
+        }
+
+        return bodyDef;
     }
-
-
 }
+
 
 
 
