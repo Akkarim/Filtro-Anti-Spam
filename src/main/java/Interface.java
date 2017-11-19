@@ -1,15 +1,26 @@
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Clase que despliega el menú del usuario
+ */
 public class Interface {
 
 	private Controller controller;
 
+	/**
+	 * Ejecuta el método controlador
+	 * @param control
+	 */
 	public Interface(Controller control) {
+
 		controller = control;
 	}
 
-
+	/**
+	 * Recive los datos y opciones del usuario
+	 * @throws IOException
+	 */
 	public void menu() throws IOException {
 		System.out.println("Welcome, please select an option.");
 		System.out.print(" Option 1: Authenticate yourself \n Option 2: Exit \n");
@@ -49,7 +60,7 @@ public class Interface {
 					case 3: controller.showData();
 						break;
 
-					case 4: controller.getMail(0); //arreglar esta picha
+					case 4: controller.getMail(0, "in:Spam");
 						break;
 
 					case 5: controller.logOut();

@@ -7,6 +7,8 @@ import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartBody;
 
+import javax.mail.MessagingException;
+
 public class BayesianFilter {
 
     private  GmailRetriever mail;
@@ -33,10 +35,6 @@ public class BayesianFilter {
         this.spamProbab = spamProbab;
     }
 
-    /*public void setWord(Word word) {
-
-        this.word = word;
-    }*/
 
     public void setSpamThreshold(double spamThreshold) {
 
@@ -65,59 +63,98 @@ public class BayesianFilter {
         return notSpamMessages;
     }
 
-    public Hashtable<String, Float> setProbForEmail(String msgs, String query) throws IOException {
+    public Hashtable<String, Float> setProbForEmail(String query) throws IOException, MessagingException {
         int counter = 0;
+        int length = 0;
+        int j = 0;
         float pb ;
-        int sizeSpamSet = spamSet().size();
-        int sizeNoSpamSet = noSpamSet().size();
-        msgs = msgs.replace('.', ' ');msgs = msgs.replace('•', ' ');
-        msgs = msgs.replace(',', ' ');msgs = msgs.replace('?', ' ');
-        msgs = msgs.replace('¿', ' ');msgs = msgs.replace('!', ' ');
-        msgs = msgs.replace('¡', ' ');msgs = msgs.replace('"', ' ');
-        msgs = msgs.replace('@', ' ');msgs = msgs.replace('©', ' ');
-        msgs = msgs.replace('#', ' ');msgs = msgs.replace(':', ' ');
-        msgs = msgs.replace(';', ' ');msgs = msgs.replace('0', ' ');
-        msgs = msgs.replace('1', ' ');msgs = msgs.replace('2', ' ');
-        msgs = msgs.replace('3', ' ');msgs = msgs.replace('4', ' ');
-        msgs = msgs.replace('5', ' ');msgs = msgs.replace('6', ' ');
-        msgs = msgs.replace('7', ' ');msgs = msgs.replace('8', ' ');
-        msgs = msgs.replace('9', ' ');msgs = msgs.replace('(', ' ');
-        msgs = msgs.replace(')', ' ');msgs = msgs.replace('-', ' ');
-        msgs = msgs.replace('_', ' ');msgs = msgs.replace('|', ' ');
-        msgs = msgs.replace('/', ' ');msgs = msgs.replace('&', ' ');
+        int sizeSpamSet = spamSet().size(); //Este métodos duran mucho
+        //int sizeNoSpamSet = noSpamSet().size();//Este métodos duran mucho
+        String msgs = "";
+        boolean find = false;
 
-        String[] setOfWords = msgs.split(" +");
+        if (query.equals("in:Spam")){
+            length = sizeSpamSet;
+        } else{
+            //length = sizeNoSpamSet;
+        }
 
-        for (String s : setOfWords) {
-            //i++;
-            if (!s.matches("^ +") && !s.equals(" ")) {
-                Word w = new Word(s);
-                if (dictionary.contains(w.getWord())) {
-                    if (query.equals("in:Spam")) {
-                        w.setFrequencyInSpam(w.getFrequencyInSpam() + 1);
-                    } else {
-                        w.setFrequencyInNotSpam(w.getFrequencyInNotSpam() + 1);
-                    }
-                } else {
-                    pb = 0.0F;
-                    counter = 0;
-                    for (int j = 0; j < setOfWords.length; ++j) {
-                        if (s.equals(setOfWords[j])) {
-                            counter++;
+        for (int i= 1; i < length; i++) {
+            msgs = mail.getBody(query, i);
+            msgs = msgs.replace('.', ' ');msgs = msgs.replace('•', ' ');
+            msgs = msgs.replace('?', ' ');msgs = msgs.replace('¿', ' ');
+            msgs = msgs.replace('¡', ' ');msgs = msgs.replace('"', ' ');
+            msgs = msgs.replace('@', ' ');msgs = msgs.replace('©', ' ');
+            msgs = msgs.replace('#', ' ');msgs = msgs.replace(':', ' ');
+            msgs = msgs.replace(';', ' ');msgs = msgs.replace('0', ' ');
+            msgs = msgs.replace('1', ' ');msgs = msgs.replace('2', ' ');
+            msgs = msgs.replace('3', ' ');msgs = msgs.replace('4', ' ');
+            msgs = msgs.replace('5', ' ');msgs = msgs.replace('6', ' ');
+            msgs = msgs.replace('7', ' ');msgs = msgs.replace('8', ' ');
+            msgs = msgs.replace('9', ' ');msgs = msgs.replace('(', ' ');
+            msgs = msgs.replace(')', ' ');msgs = msgs.replace('-', ' ');
+            msgs = msgs.replace('_', ' ');msgs = msgs.replace('|', ' ');
+            msgs = msgs.replace('/', ' ');msgs = msgs.replace('&', ' ');
+            msgs = msgs.replace(',', ' ');msgs = msgs.replace('!', ' ');
+            msgs = msgs.replace('=', ' '); msgs = msgs.replace('$', ' ');
+
+            String[] setOfWords = msgs.split(" +");
+
+            for (String s : setOfWords) {
+                if (!s.matches("^ +") && !s.equals(" ")) {
+                    Word w = new Word(s);
+                    if (dictionary.contains(w.getWord())) {
+                        if (query.equals("in:Spam")) {
+                            w.setFrequencyInSpam(w.getFrequencyInSpam() + 1);
+                        } else {
+                            w.setFrequencyInNotSpam(w.getFrequencyInNotSpam() + 1);
                         }
-                    }
-                    if (query.equals("in:Spam")) {
-                        pb = (float) counter / sizeSpamSet;
                     } else {
-                        pb = (float) counter / sizeNoSpamSet;
+                        pb = 0.0F;
+                        counter = 0;
+                        //for (int j = 0; j < setOfWords.length; ++j) {
+                        j = 0;
+                        find=false;
+                        while(j < setOfWords.length && !find){
+                            if (s.equals(setOfWords[j])) {
+                                counter++;
+                                find = true;
+                            }
+                            j++;
+                        }
+                        if (query.equals("in:Spam")) {
+                            pb = (float) counter / sizeSpamSet;
+                        } else {
+                           // pb = (float) counter / sizeNoSpamSet;
+                        }
+                        dictionary.put(s, pb);
                     }
-                    dictionary.put(s, pb);
                 }
             }
         }
             return dictionary;
     }
 
+    /*public Hashtable<String, Float> getPuta(String query) throws IOException, MessagingException {
+        int sizeSpamSet = spamSet().size();
+        int sizeNoSpamSet = noSpamSet().size();
+        Hashtable<String, Float> tmp = new Hashtable<String, Float>();
+        String body = "";
+        int length = 0;
 
+        if (query.equals("in:Spam")){
+            length = sizeSpamSet;
+        } else{
+            length = sizeNoSpamSet;
+        }
 
+        for(int i = 1; i > length; i++){
+            body = mail.getBody(query, i);
+            tmp += this.setProbForEmail(body, query);
+        }
+
+        body = mail.getBody(query, length);
+        tmp = this.setProbForEmail(body, query);
+        return tmp;
+    }*/
 }

@@ -42,7 +42,7 @@ public class GmailRetriever {
             "Bayesian_Filter";
 
     private static  java.io.File DATA_STORE_DIR = new java.io.File(
-            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter"); //soy crack  "Documents/BayesianFilter"
+            System.getProperty("user.home"), ".credentials/gmail-java-Bayesian_Filter");
 
     private static FileDataStoreFactory DATA_STORE_FACTORY;
 
@@ -79,7 +79,6 @@ public class GmailRetriever {
                         .build();
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
-        //System.out.println("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }
 
@@ -114,68 +113,63 @@ public class GmailRetriever {
         return messages;
     }
 
-    public String getBody(String query) throws IOException, MessagingException {
-
+    public String getBody(String query, long maxMsgs) throws IOException, MessagingException {
         Gmail ser = getGmailService();
         String body = ""; //El cuerpo del corrreo
         byte[] emailBytes; // Un array con letras del correo
 
-        ListMessagesResponse response = ser.users().messages().list("me").setQ(query).setMaxResults((long)1).execute();
+        ListMessagesResponse response = ser.users().messages().list("me").setQ(query).setMaxResults(maxMsgs).execute();
         List<Message> messages = response.getMessages();
         Message message = new Message();
         Document doc;
         Base64 base = new Base64(true);
         String bodyDef = "";
+        int counter = 1;
+        for(Message mID : messages) {
+            if (counter == maxMsgs) {
+                message = getGmailService().users().messages().get("me", mID.getId()).setFormat("full").execute();
 
-        for(Message mID : messages){
+                if (message.getPayload().getMimeType().equals("text/html")) {
 
-            message = getGmailService().users().messages().get("me", mID.getId()).setFormat("full").execute();
+                    emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                    body = new String(emailBytes);
+                    doc = Jsoup.parse(body);
+                    bodyDef += doc.body().text();
 
-            if(message.getPayload().getMimeType().equals("text/html")) {
+                } else if (message.getPayload().getMimeType().equals("text/plain")) {
 
-                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                body = new String(emailBytes);
-                doc = Jsoup.parse(body);
-                bodyDef += doc.body().text();
-                //System.out.println(doc.body().text());
-
-
-            } else if (message.getPayload().getMimeType().equals("text/plain")){
-
-                emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
-                bodyDef += new String(emailBytes);
-                //System.out.println(body);
+                    emailBytes = base.decodeBase64(message.getPayload().getBody().getData());
+                    bodyDef += new String(emailBytes);
 
 
-            } else if (message.getPayload().getMimeType().equals("multipart/alternative")){
+                } else if (message.getPayload().getMimeType().equals("multipart/alternative")) {
 
-                List<MessagePart> parts = message.getPayload().getParts();
+                    List<MessagePart> parts = message.getPayload().getParts();
 
-                for (MessagePart parte : parts) {
+                    for (MessagePart parte : parts) {
 
-                    emailBytes = base.decodeBase64(parte.getBody().getData());
+                        emailBytes = base.decodeBase64(parte.getBody().getData());
 
-                    if (parte.getMimeType().equals("text/html")) {
+                        if (parte.getMimeType().equals("text/html")) {
 
-                        body = new String(emailBytes);
-                        doc = Jsoup.parse(body);
-                        bodyDef += doc.body().text();
-                        //System.out.println(doc.body().text());
+                            body = new String(emailBytes);
+                            doc = Jsoup.parse(body);
+                            bodyDef += doc.body().text();
 
-                    } else if (parte.getMimeType().equals("text/plain")) {
-                        bodyDef += new String(emailBytes);
-                        //System.out.println(body);
+                        } else if (parte.getMimeType().equals("text/plain")) {
+                            bodyDef += new String(emailBytes);
+                        }
                     }
                 }
-            }
 
+            } else{
+                counter++;
+            }
         }
-    //System.out.print(bodyDef);
         return bodyDef;
     }
-    
-
 }
+
 
 
 
