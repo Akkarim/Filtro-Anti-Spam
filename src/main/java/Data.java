@@ -6,11 +6,7 @@ public class Data {
     public Data(){
     }
 
-    public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<String, Double> tabla) throws IOException {
-        //Hashtable<Integer, String> prb = new Hashtable<Integer, String>();
-        //prb.put(42, "vida");
-        //prb.put(24, "muerte");
-        //prb.put(666, "satan");
+    public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<String, Float> tabla) throws IOException {
 
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
         File uData = new File(path + "/hashData.txt"); //Usaer data, hacemos un archivo
