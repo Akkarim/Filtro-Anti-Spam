@@ -34,7 +34,9 @@ import com.google.api.services.gmail.model.MessagePartBody;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-
+/**
+ * Clase que se encarga de administrar el uso del gmail
+ */
 public class GmailRetriever {
 
 
@@ -63,8 +65,12 @@ public class GmailRetriever {
             System.exit(1);
         }
     }
-    
 
+    /**
+     * Pregunta al usuario si autoriza la aplicación
+     * @return Credencial autorizada o no
+     * @throws IOException Excepción de java
+     */
     public static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
@@ -82,6 +88,11 @@ public class GmailRetriever {
         return credential;
     }
 
+    /**
+     * Genera un servicio de gmail
+     * @return servicio de gmail
+     * @throws IOException Excepción de java
+     */
     public static Gmail getGmailService() throws IOException {
         Credential credential = authorize();
         return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
@@ -89,6 +100,13 @@ public class GmailRetriever {
                 .build();
     }
 
+    /**
+     * Obtiene los menajes del usuario
+     * Requiere que la query sea in:Spam o in:Inbox
+     * @param query Puede ser spam o inbox
+     * @return Lista de mensajes
+     * @throws IOException Excepción de java
+     */
     public static List<Message> getMessages(String query) throws IOException {
 
         Gmail gSpam = getGmailService();
@@ -113,6 +131,14 @@ public class GmailRetriever {
         return messages;
     }
 
+    /**
+     * Obtiene el cuerpo de los mensjaes de la lista escogida
+     * @param query Puede ser spam o inbox
+     * @param maxMsgs Número de mensaje que se quiere
+     * @return String con el cuerpo del mensaje
+     * @throws IOException Excepción de java
+     * @throws MessagingException Excepción de java
+     */
     public String getBody(String query, long maxMsgs) throws IOException, MessagingException {
         Gmail ser = getGmailService();
         String body = ""; //El cuerpo del corrreo

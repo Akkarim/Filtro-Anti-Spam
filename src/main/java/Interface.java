@@ -10,7 +10,7 @@ public class Interface {
 
 	/**
 	 * Ejecuta el método controlador
-	 * @param control
+	 * @param control Clase
 	 */
 	public Interface(Controller control) {
 
@@ -19,7 +19,7 @@ public class Interface {
 
 	/**
 	 * Recive los datos y opciones del usuario
-	 * @throws IOException
+	 * @throws IOException Excepción de java
 	 */
 	public void menu() throws IOException {
 		System.out.println("Welcome, please select an option.");

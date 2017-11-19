@@ -11,6 +11,15 @@ public class Data {
     public Data(){
     }
 
+    /**
+     * Almacena los datos del usuario en://Documents/BayesianFilter//Users
+     * @param usr
+     * @param spamProb
+     * @param spamThresh
+     * @param setSize
+     * @param tabla
+     * @throws IOException
+     */
     public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<String, Float> tabla) throws IOException {
 
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
@@ -21,6 +30,11 @@ public class Data {
         hashData.close();
     }
 
+    /**
+     * Carga los datos guardados por el usario.
+     * @param usr
+     * @throws IOException
+     */
     public void load(String usr) throws IOException {
 
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
@@ -34,6 +48,10 @@ public class Data {
         }
     }
 
+    /**
+     * Borra todos los datos del usuario
+     * @param usr
+     */
     public void delete(String usr){
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter/Users" + "/" + usr + "//hashData.txt";
         File toDelete = new File(path);

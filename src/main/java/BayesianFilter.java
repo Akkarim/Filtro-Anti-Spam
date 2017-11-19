@@ -1,14 +1,15 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartBody;
-
 import javax.mail.MessagingException;
 
+/**
+ * Clase que se encarga del algoritmo
+ */
 public class BayesianFilter {
 
     private  GmailRetriever mail;
@@ -20,6 +21,9 @@ public class BayesianFilter {
     private double wordProb;
     private Hashtable<String,Float> dictionary;
 
+    /**
+     * Constructor de la clase
+     */
     public BayesianFilter(){
         dictionary = new Hashtable<String,Float>();
         mail = new GmailRetriever();
@@ -30,39 +34,73 @@ public class BayesianFilter {
         email = new Email();
     }
 
+    /**
+     * Define la proba de spam
+     * Requiere que este entre 0 y 1
+     * @param spamProbab Nueva proba de spam
+     */
     public void setSpamProbab(double spamProbab) {
 
         this.spamProbab = spamProbab;
     }
 
-
+    /**
+     * Límite para que un correo sea considerado spam
+     * @param spamThreshold límite
+     */
     public void setSpamThreshold(double spamThreshold) {
 
         this.spamThreshold = spamThreshold;
     }
 
+    /**
+     * Agrega al Hash una palabra con su respectiva proba
+     * @param s Palabra
+     * @param prob Proba asociada
+     */
     public void addToDictionary(String s, float prob){
 
         dictionary.put(s,prob);
     }
 
+    /**
+     * Número de correos para el entrenamiento
+     * @param newSize Nuevo tamaño
+     */
     public void setSizeOfTrainSet(int newSize){
 
         sizeOfTrainSet = newSize;
     }
 
+    /**
+     * Lista con los correos de spam
+     * @return Lista de mensajes spam
+     * @throws IOException Excepción de java
+     */
     public List<Message> spamSet() throws IOException {
         List<Message> spamMessages = new ArrayList<Message>();
         spamMessages = mail.getMessages("in:Spam");
         return spamMessages;
     }
 
+    /**
+     * Lista con los correos en in:Inbox
+     * @return Lista de mensajes nospam
+     * @throws IOException Excepción de java
+     */
     public List<Message> noSpamSet() throws IOException {
         List<Message> notSpamMessages = new ArrayList<Message>();
         notSpamMessages = mail.getMessages("in:Inbox");
         return notSpamMessages;
     }
 
+    /**
+     * Saca la proba de cada palabra
+     * @param query Consulta spam o inbox
+     * @return Hash Table
+     * @throws IOException Excepción de java
+     * @throws MessagingException Excepción de java
+     */
     public Hashtable<String, Float> setProbForEmail(String query) throws IOException, MessagingException {
         int counter = 0;
         int length = 0;
