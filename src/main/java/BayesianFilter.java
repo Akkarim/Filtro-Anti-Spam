@@ -1,10 +1,12 @@
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.*;
+
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
-import java.util.List;
+import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartBody;
+
 public class BayesianFilter {
 
     private  GmailRetriever mail;
@@ -115,4 +117,7 @@ public class BayesianFilter {
         }
             return dictionary;
     }
+
+
+
 }

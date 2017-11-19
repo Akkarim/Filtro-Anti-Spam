@@ -14,8 +14,7 @@ import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
@@ -25,18 +24,19 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartBody;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+
 public class GmailRetriever {
+
 
     private static final String APPLICATION_NAME =
             "Bayesian_Filter";
@@ -120,7 +120,7 @@ public class GmailRetriever {
         String body = ""; //El cuerpo del corrreo
         byte[] emailBytes; // Un array con letras del correo
 
-        ListMessagesResponse response = ser.users().messages().list("me").setQ(query).execute();
+        ListMessagesResponse response = ser.users().messages().list("me").setQ(query).setMaxResults((long)1).execute();
         List<Message> messages = response.getMessages();
         Message message = new Message();
         Document doc;
@@ -173,6 +173,8 @@ public class GmailRetriever {
     //System.out.print(bodyDef);
         return bodyDef;
     }
+    
+
 }
 
 

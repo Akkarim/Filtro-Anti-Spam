@@ -35,12 +35,14 @@ public class Main {
         //control.getMail(1);
         //bayes.noSpamSet(10);
         //System.out.println(control.getBody(gm.getGmailService(), "me", "15fcac93204c778e"));
-        String body = gm.getBody("in:Inbox");
+        //String body = gm.getBody("in:Inbox");
         //System.out.println(body);
 
         //Hashtable<String, Double> table = bayes.setProbForEmail(body);
         data.delete("jimmy");
-        data.store("jimmy",0,0.3, 4, bayes.setProbForEmail(body, "in:Spam"));
+        //data.store("jimmy",0,0.3, 4, bayes.setProbForEmail(body, "in:Spam"));
+        System.out.print(gm.getBody("in:Inbox"));
+
     }
 
 }
