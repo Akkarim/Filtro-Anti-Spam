@@ -17,17 +17,25 @@ public class Data {
      * @param spamProb
      * @param spamThresh
      * @param setSize
-     * @param tabla
+     * @param prob
      * @throws IOException
      */
-    public void store(String usr, double spamProb, double spamThresh, int setSize, Hashtable<String, Float> tabla) throws IOException {
+    public void store(String usr, float spamProb, float spamThresh, int setSize, Hashtable<String, Float> prob, Hashtable<String, Integer> freq) throws IOException {
 
         String path = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
-        File uData = new File(path + "/hashData.txt"); //Usaer data, hacemos un archivo
-        FileWriter hashData = new FileWriter(uData, true); // no se que para poder escribir
-        hashData.write("HashTable: " + tabla.toString() + '\n');// escribimos
-        hashData.append("SpamProb: " + spamProb + '\n'+ "SpamThresh: " + spamThresh + '\n' + "SetSize: " + setSize);
-        hashData.close();
+        File uData = new File(path + "/Probability Data.txt"); //Usaer data, hacemos un archivo
+        FileWriter pTab = new FileWriter(uData, true); // no se que para poder escribir
+        pTab.write("Probability Table: " + prob.toString() + '\n');// escribimos
+
+        String path2 = System.getProperty("user.home") + "//Documents/BayesianFilter//Users" + "//" + usr + "/";
+        File uData2 = new File(path2 + "/Frequency Data.txt"); //Usaer data, hacemos un archivo
+        FileWriter fTab = new FileWriter(uData2, true); // no se que para poder escribir
+        fTab.write("Frequency Table: " + prob.toString() + '\n');// escribimos
+
+        pTab.append("SpamProb: " + spamProb + '\n'+ "SpamThresh: " + spamThresh + '\n' + "SetSize: " + setSize);
+
+        fTab.close();
+        pTab.close();
     }
 
     /**

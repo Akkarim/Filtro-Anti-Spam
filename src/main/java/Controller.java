@@ -1,14 +1,8 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.model.Message;
-import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
-import com.google.api.services.gmail.model.MessagePart;
-import com.google.api.services.gmail.model.MessagePartBody;
-
 import javax.mail.MessagingException;
 
 /**
@@ -18,14 +12,18 @@ public class Controller {
     private GmailRetriever mails;
     private String bf;
     private BayesianFilter filter;
+    private Data data;
+    private boolean trained;
+
 
     /**
      * Constructor de la clase
      */
     public Controller(){
-
+        trained = false;
         mails = new GmailRetriever();
         filter = new BayesianFilter();
+        data = new Data();
         bf = "";
     }
 
@@ -35,7 +33,7 @@ public class Controller {
      * @param spamThresh
      * @param setSize
      */
-    public void configuration(double spamProb, double spamThresh, int setSize){
+    public void configuration(float spamProb, float spamThresh, int setSize){
         filter.setSpamProbab(spamProb);
         filter.setSpamThreshold(spamThresh);
         filter.setSizeOfTrainSet(setSize);
@@ -44,10 +42,12 @@ public class Controller {
     /**
      * Ejecuta un entrenamiento para el programa
      */
-    public void train() throws IOException, MessagingException {
+    public Hashtable<String,Float> train() throws IOException, MessagingException {
+        trained = true;
         Hashtable<String, Float> prob = new Hashtable<>();
         mails.getMessagesFrom("in:Spam", filter.getSizeOfTrainSet());
         prob = filter.setWord(filter.setProbForEmail("in:Spam"), "in:Spam");
+        return prob;
     }
 
     /**
@@ -61,23 +61,30 @@ public class Controller {
 
     /**
      * Obtiene la cantidad de mensajes en el buzón escogido
-     * @param num
-     * @param query
      * @return Array
      * @throws IOException
      */
-    public Message getMail(int num, String query) throws IOException {
-
-
-
-        /*List<Message> array = new ArrayList<Message>();
-        array = mails.getMessages(query);// puede ser in:Spam o in:Inbox
-        if (array.get(num)  != null){
-            System.out.println(array.get(num));
-            return array.get(num);
-        } else {
-            return null;
-        }*/
+    public void getMail() throws IOException, MessagingException {
+        if(trained){
+            List<Email> unread = mails.getMessagesFrom("in:unread", 100);
+            Hashtable<String, Float> spamWords = this.train();
+            Enumeration<String> e = spamWords.keys();
+            boolean find = false;
+            for (int i = 0; i < unread.size(); i++) {
+                while (e.hasMoreElements() && !find){
+                    if (unread.get(i).getBody().contains(e.nextElement())){
+                        find = true;
+                        float pW =spamWords.get(e.nextElement());
+                        float spb = pW/(pW-(1-pW));
+                        if (spb > filter.getSpamThreshold()){
+                            System.out.println("Is spam bitch");
+                        } else {
+                            System.out.println("Isn´t spam bitch");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

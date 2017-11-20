@@ -42,21 +42,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, MessagingException {
         Main aMain = new Main();
-        BayesianFilter bayes = new BayesianFilter();
-        Data data = new Data();
-        //aMain.start();
-
-        try {
-            control.logIn("usuario");
-        } catch (IOException e){
-            System.out.println("Ups! Error. Try again later.");
-        }
-        data.delete("usuario");
-        System.out.println("Tutiaesmia");
-        List<Email> emails = gm.getMessagesFrom("in:unread", 100);
-        System.out.println(emails.get(100).getBody());
-
-        //data.store("usuario",0,0.3, 4, bayes.setWord(bayes.setProbForEmail("in:Spam"), "in:Spam"));
+        aMain.start();
 
     }
 }

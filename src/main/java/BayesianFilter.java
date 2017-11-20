@@ -12,15 +12,18 @@ import javax.mail.MessagingException;
  */
 public class BayesianFilter {
 
-    private  GmailRetriever mail;
+    private GmailRetriever mail;
     private Email email;
-    private double spamProbab;
-    private double spamThreshold;
+    private float spamProbab;
+    private float spamThreshold;
     private int sizeOfTrainSet;
     private Word word;
-    private double wordProb;
+    private float wordProb;
     private Hashtable<String,Float> dictionary;
     private int length;
+    private String usrName;
+    private Data data;
+    private Hashtable<String, Integer> freq;
 
     /**
      * Constructor de la clase
@@ -28,12 +31,23 @@ public class BayesianFilter {
     public BayesianFilter(){
         dictionary = new Hashtable<String,Float>();
         mail = new GmailRetriever();
-        spamProbab = 0.3;
-        spamThreshold = 0.9;
-        sizeOfTrainSet = 0;
+        spamProbab = 0.3F;
+        spamThreshold = 0.9F;
+        sizeOfTrainSet = 50;
         word = new Word();
         email = new Email();
         length = 0;
+        usrName ="";
+        data=new Data();
+        freq = new Hashtable<String, Integer>();
+    }
+
+    public void setUsrName(String usrName) {
+        this.usrName = usrName;
+    }
+
+    public String getUsrName() {
+        return usrName;
     }
 
     /**
@@ -41,12 +55,12 @@ public class BayesianFilter {
      * Requiere que este entre 0 y 1
      * @param spamProbab Nueva proba de spam
      */
-    public void setSpamProbab(double spamProbab) {
+    public void setSpamProbab(float spamProbab) {
 
         this.spamProbab = spamProbab;
     }
 
-    public double getSpamProbab(){
+    public float getSpamProbab(){
         return spamProbab;
     }
 
@@ -54,12 +68,12 @@ public class BayesianFilter {
      * Límite para que un correo sea considerado spam
      * @param spamThreshold límite
      */
-    public void setSpamThreshold(double spamThreshold) {
+    public void setSpamThreshold(float spamThreshold) {
 
         this.spamThreshold = spamThreshold;
     }
 
-    public double getSpamThreshold() {
+    public float getSpamThreshold() {
         return spamThreshold;
     }
 
@@ -116,7 +130,6 @@ public class BayesianFilter {
      * @throws MessagingException Excepción de java
      */
     public Hashtable<String, Integer> setProbForEmail(String query) throws IOException, MessagingException {
-        Hashtable<String, Integer> freq = new Hashtable<String, Integer>();
         int counter = 0;
         int length = 0;
         String msgs = "";
@@ -125,7 +138,7 @@ public class BayesianFilter {
         } else{
             length = noSpamSet().size();
         }
-        for (int i= 1; i < 50; i++) {
+        for (int i= 1; i < 10; i++) {
             msgs = mail.getBody(query, i);
             msgs = msgs.replace('.', ' ');msgs = msgs.replace('•', ' ');
             msgs = msgs.replace('?', ' ');msgs = msgs.replace('¿', ' ');
@@ -164,19 +177,23 @@ public class BayesianFilter {
         if (query.equals("in:Spam")){
             length = spamSet().size(); // Duran mucho
         } else{
-            length = noSpamSet().size(); // Dura muchi
+            length = noSpamSet().size(); // Dura much0
                     }
         Enumeration<String> e = freq.keys();
         String caca = e.nextElement();
         System.out.println(caca);
-        while(e.hasMoreElements()){
+        while(e.hasMoreElements() && e.nextElement()!=null){
             tmp = freq.get(e.nextElement());
             pb = (float) tmp / length;
             if(e.nextElement()!=null){
                 dictionary.put(e.nextElement(), pb);
             }
-
         }
+        data.store(usrName, spamProbab, spamThreshold, sizeOfTrainSet, dictionary, freq);
         return dictionary;
     }
+
+   /* public void dataStore() throws IOException {
+        data.store(usrName, spamProbab, spamThreshold, sizeOfTrainSet, dictionary, freq);
+    }*/
 }
