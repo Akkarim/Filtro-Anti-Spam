@@ -1,12 +1,15 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartBody;
+
+import javax.mail.MessagingException;
 
 /**
  * Clase controladora que administra todo el programa
@@ -41,9 +44,10 @@ public class Controller {
     /**
      * Ejecuta un entrenamiento para el programa
      */
-    public void train(){
-        int counter = 42;
-
+    public void train() throws IOException, MessagingException {
+        Hashtable<String, Float> prob = new Hashtable<>();
+        mails.getMessagesFrom("in:Spam", filter.getSizeOfTrainSet());
+        prob = filter.setWord(filter.setProbForEmail("in:Spam"), "in:Spam");
     }
 
     /**
@@ -63,14 +67,17 @@ public class Controller {
      * @throws IOException
      */
     public Message getMail(int num, String query) throws IOException {
-        List<Message> array = new ArrayList<Message>();
+
+
+
+        /*List<Message> array = new ArrayList<Message>();
         array = mails.getMessages(query);// puede ser in:Spam o in:Inbox
         if (array.get(num)  != null){
             System.out.println(array.get(num));
             return array.get(num);
         } else {
             return null;
-        }
+        }*/
     }
 
     /**

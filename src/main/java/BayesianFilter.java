@@ -20,6 +20,7 @@ public class BayesianFilter {
     private Word word;
     private double wordProb;
     private Hashtable<String,Float> dictionary;
+    private int length;
 
     /**
      * Constructor de la clase
@@ -32,6 +33,7 @@ public class BayesianFilter {
         sizeOfTrainSet = 0;
         word = new Word();
         email = new Email();
+        length = 0;
     }
 
     /**
@@ -44,6 +46,10 @@ public class BayesianFilter {
         this.spamProbab = spamProbab;
     }
 
+    public double getSpamProbab(){
+        return spamProbab;
+    }
+
     /**
      * Límite para que un correo sea considerado spam
      * @param spamThreshold límite
@@ -51,6 +57,14 @@ public class BayesianFilter {
     public void setSpamThreshold(double spamThreshold) {
 
         this.spamThreshold = spamThreshold;
+    }
+
+    public double getSpamThreshold() {
+        return spamThreshold;
+    }
+
+    public int getSizeOfTrainSet() {
+        return sizeOfTrainSet;
     }
 
     /**
@@ -101,23 +115,17 @@ public class BayesianFilter {
      * @throws IOException Excepción de java
      * @throws MessagingException Excepción de java
      */
-    public Hashtable<String, Float> setProbForEmail(String query) throws IOException, MessagingException {
+    public Hashtable<String, Integer> setProbForEmail(String query) throws IOException, MessagingException {
+        Hashtable<String, Integer> freq = new Hashtable<String, Integer>();
         int counter = 0;
         int length = 0;
-        int j = 0;
-        float pb ;
-        int sizeSpamSet = spamSet().size(); //Este métodos duran mucho
-        //int sizeNoSpamSet = noSpamSet().size();//Este métodos duran mucho
         String msgs = "";
-        boolean find = false;
-
         if (query.equals("in:Spam")){
-            length = sizeSpamSet;
+            length = spamSet().size();
         } else{
-            //length = sizeNoSpamSet;
+            length = noSpamSet().size();
         }
-
-        for (int i= 1; i < length; i++) {
+        for (int i= 1; i < 50; i++) {
             msgs = mail.getBody(query, i);
             msgs = msgs.replace('.', ' ');msgs = msgs.replace('•', ' ');
             msgs = msgs.replace('?', ' ');msgs = msgs.replace('¿', ' ');
@@ -134,65 +142,41 @@ public class BayesianFilter {
             msgs = msgs.replace('_', ' ');msgs = msgs.replace('|', ' ');
             msgs = msgs.replace('/', ' ');msgs = msgs.replace('&', ' ');
             msgs = msgs.replace(',', ' ');msgs = msgs.replace('!', ' ');
-            msgs = msgs.replace('=', ' '); msgs = msgs.replace('$', ' ');
+            msgs = msgs.replace('=', ' ');msgs = msgs.replace('$', ' ');
+            msgs = msgs.replace('\r', ' '); msgs = msgs.replace('\n', ' ');
 
             String[] setOfWords = msgs.split(" +");
 
             for (String s : setOfWords) {
-                if (!s.matches("^ +") && !s.equals(" ")) {
-                    Word w = new Word(s);
-                    if (dictionary.contains(w.getWord())) {
-                        if (query.equals("in:Spam")) {
-                            w.setFrequencyInSpam(w.getFrequencyInSpam() + 1);
-                        } else {
-                            w.setFrequencyInNotSpam(w.getFrequencyInNotSpam() + 1);
-                        }
-                    } else {
-                        pb = 0.0F;
-                        counter = 0;
-                        //for (int j = 0; j < setOfWords.length; ++j) {
-                        j = 0;
-                        find=false;
-                        while(j < setOfWords.length && !find){
-                            if (s.equals(setOfWords[j])) {
-                                counter++;
-                                find = true;
-                            }
-                            j++;
-                        }
-                        if (query.equals("in:Spam")) {
-                            pb = (float) counter / sizeSpamSet;
-                        } else {
-                           // pb = (float) counter / sizeNoSpamSet;
-                        }
-                        dictionary.put(s, pb);
-                    }
+                if (freq.containsKey(s)) {
+                    freq.put(s, freq.get(s)+1);
+                } else {
+                    freq.put(s, 1);
                 }
             }
         }
-            return dictionary;
+            return freq;
     }
 
-    /*public Hashtable<String, Float> getPuta(String query) throws IOException, MessagingException {
-        int sizeSpamSet = spamSet().size();
-        int sizeNoSpamSet = noSpamSet().size();
-        Hashtable<String, Float> tmp = new Hashtable<String, Float>();
-        String body = "";
-        int length = 0;
-
+    public Hashtable<String, Float> setWord(Hashtable<String, Integer> freq, String query) throws IOException {
+        float pb = 0.0F;
+        int tmp = 0;
         if (query.equals("in:Spam")){
-            length = sizeSpamSet;
+            length = spamSet().size(); // Duran mucho
         } else{
-            length = sizeNoSpamSet;
-        }
+            length = noSpamSet().size(); // Dura muchi
+                    }
+        Enumeration<String> e = freq.keys();
+        String caca = e.nextElement();
+        System.out.println(caca);
+        while(e.hasMoreElements()){
+            tmp = freq.get(e.nextElement());
+            pb = (float) tmp / length;
+            if(e.nextElement()!=null){
+                dictionary.put(e.nextElement(), pb);
+            }
 
-        for(int i = 1; i > length; i++){
-            body = mail.getBody(query, i);
-            tmp += this.setProbForEmail(body, query);
         }
-
-        body = mail.getBody(query, length);
-        tmp = this.setProbForEmail(body, query);
-        return tmp;
-    }*/
+        return dictionary;
+    }
 }

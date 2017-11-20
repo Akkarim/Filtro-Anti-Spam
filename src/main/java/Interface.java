@@ -1,3 +1,4 @@
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -21,7 +22,7 @@ public class Interface {
 	 * Recive los datos y opciones del usuario
 	 * @throws IOException Excepción de java
 	 */
-	public void menu() throws IOException {
+	public void menu() throws IOException, MessagingException {
 		System.out.println("Welcome, please select an option.");
 		System.out.print(" Option 1: Authenticate yourself \n Option 2: Exit \n");
 		Scanner opt = new Scanner(System.in);

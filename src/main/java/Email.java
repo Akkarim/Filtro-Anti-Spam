@@ -10,6 +10,11 @@ public class Email {
         subject = "";
 
     }
+    public Email(String id, String subject, String body){
+        this.id = id;
+        this.body = body;
+        this.subject = subject;
+    }
 
     public void setId(String id) {
 

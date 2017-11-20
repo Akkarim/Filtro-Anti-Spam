@@ -1,6 +1,8 @@
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * @author Jimmy Acuña, Luis Carvajal
@@ -28,7 +30,7 @@ public class Main {
      * Llama a la interfaz
      * @throws IOException
      */
-    public void start() throws IOException {
+    public void start() throws IOException, MessagingException {
         interf.menu();
     }
 
@@ -50,8 +52,11 @@ public class Main {
             System.out.println("Ups! Error. Try again later.");
         }
         data.delete("usuario");
-        data.store("usuario",0,0.3, 4, bayes.setProbForEmail("in:Spam"));
+        System.out.println("Tutiaesmia");
+        List<Email> emails = gm.getMessagesFrom("in:unread", 100);
+        System.out.println(emails.get(100).getBody());
+
+        //data.store("usuario",0,0.3, 4, bayes.setWord(bayes.setProbForEmail("in:Spam"), "in:Spam"));
 
     }
-
 }
